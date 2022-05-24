@@ -1,0 +1,122 @@
+
+;cosinus hiperbolic : cosh(x) = ( e^x + e^(−x) ) / 2
+
+section .data
+
+msg1 db "Enter number x: ", 0
+msg2 db "The result o cosh(x) is", 0
+msg3 db "Print something" , 0
+fmstr db "%s", 10, 0 ; format afisare string 
+fmflt db "%lf", 10, 0; fromat afisare float
+e_la_x dq 1
+e_la_xneg dq 1
+num2 dq 2
+plus dq 1
+num dq 1
+counter dq 0
+e dq 2
+formatin db "%d", 0
+formatout db "%d",10,0
+
+
+section .bss
+result resq 1
+sum resq 1
+modulo resq 1
+x resq 1
+
+section .text
+global main
+
+extern printf ; declare the function as external
+extern scanf ; declare the function as external
+
+main:
+; init, initializare funct, ie
+push rbp
+mov rbp, rsp
+sub rsp,16
+
+
+;afisare mesaj 1
+mov rax, 0
+mov rdi, fmstr   ;first arg for printf
+mov rsi, msg1    ;second arg for printf
+call printf
+
+;citire x
+mov rax, 0
+mov rsi, x
+mov rdi, formatin
+call scanf
+
+;e la x
+jloop:
+
+mov rax, [counter] ; counter in rax
+mov rbx, [x]
+cmp rax,rbx ; compare rax and rbx
+jl lower ; rax lower go to lower
+
+
+mov rax, [e_la_x] ; rax is equal
+mov [sum], rax 
+jmp go
+
+
+lower:
+mov rbx, [counter]
+mov rcx, [plus]
+add rbx,rcx
+mov [counter],rbx
+mov rax, [e_la_x]
+imul qword [e]
+mov [e_la_x], rax
+jmp jloop  ; keeps looping until rax/counter equals x
+
+go:
+;e la -x este 1/e^x
+
+mov rax, [num]  ;pot scrie mov rax, 1
+mov rdx,0
+idiv qword [e_la_x]
+mov [e_la_xneg], rax
+   
+mov rsi, [e_la_xneg]
+lea rdi, [formatout]    
+xor eax, eax
+call printf
+
+
+;adunare e^x cu e^(-x)
+mov rax, [sum]
+add rax, [e_la_xneg]
+mov [sum], rax
+
+;impartire
+mov rax, [sum]
+mov rdx, 0
+idiv qword [num2]
+mov [result], rax
+mov [modulo], rdx
+
+mov rax, 0
+mov rdi, fmstr  ;first arg for printf
+mov rsi, msg2   ;second arg for printf
+call printf
+
+   
+mov rsi, [result]
+lea rdi, [formatout]    
+xor eax, eax
+call printf
+
+    
+; ies din program
+exit:
+add rsp, 16
+leave
+ret
+
+
+
