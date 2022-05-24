@@ -31,7 +31,7 @@ x=atoi(c);
  printf("Sfarsit executie threaduri!\n");
 
 double s=(p+1/p)/2;
-printf("Valoarea lui sinus hiperbolic este : %lf", s);
+printf("Valoarea lui cosinus hiperbolic este : %lf", s);
  exit(EXIT_SUCCESS);
 }
 
